@@ -18,6 +18,9 @@ namespace snd{
       bool isMC;
 
       TClonesArray * MCTracks;
+
+      double* pmu_weight_ptr;
+      double default_weight = 1.0;
       
       std::vector< snd::analysis_cuts::baseCut * > * cuts;
       

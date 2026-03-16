@@ -10,6 +10,10 @@
 #pragma link C++ namespace snd::analysis_processes;
 #pragma link C++ defined_in namespace snd::analysis_processes;
 
+//#pragma link C++ class snd::analysis_processes::PMUFilter+;
+#pragma link C++ class snd::analysis_processes::MCWeight+;
+#pragma link C++ class snd::analysis_processes::sndPMUWeightProcess+;
+
 #pragma link C++ class snd::analysis_processes::sndSciFiHitFilter_legacy+;
 #pragma link C++ class snd::analysis_processes::cutFlowHist+;
 #endif

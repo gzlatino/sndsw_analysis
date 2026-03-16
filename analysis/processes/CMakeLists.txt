@@ -13,6 +13,10 @@ set(SRCS
 sndSciFiHitFilter.cxx
 sndSciFiHitFilter_legacy.cxx
 sndCutFlowHist.cxx
+
+#sndPMUFilter.cxx
+#sndMCWeight.cxx
+sndPMUWeightProcess.cxx
 )
 
 set(LINK_DIRECTORIES

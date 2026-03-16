@@ -1,4 +1,4 @@
-#include "sndVetoCut.h"
+#include "sndVetoHitsCut.h"
 
 #include "TClonesArray.h"
 #include "TChain.h"
@@ -6,8 +6,8 @@
 
 namespace snd::analysis_cuts {
 
-  vetoCut::vetoCut() : MuFilterBaseCut() {
-    processName = "Veto Cuts";
+  vetoHitsCut::vetoHitsCut() : MuFilterBaseCut() {
+    processName = "Total Veto Hits >1; Hits per plane <2";
 
     shortName = "Clean Muon Veto Cut";
     nbins = std::vector<int>{16};
@@ -17,22 +17,9 @@ namespace snd::analysis_cuts {
 
   }
 
-//   void vetoCut::process(){
-//     plot_var[0] = 0;
-
-//     for (TObject * obj : *muFilterDigiHitCollection){
-//       MuFilterHit * hit = dynamic_cast<MuFilterHit*>(obj);
-//       if (hit->GetSystem() == 1) plot_var[0] += 1;
-//     }
-    
-//     if (plot_var[0] > 0) {passed_cut = false; return;}
-//     passed_cut = true; return;
-//   }
-// }
-
-  void vetoCut::process(){
+  void vetoHitsCut::process(){
     plot_var[0] = 0;
-
+    
     int totalHits = 0;
     int hitsPerPlane[2] = {0,0};
 
@@ -40,11 +27,9 @@ namespace snd::analysis_cuts {
       {
         MuFilterHit * hit = dynamic_cast<MuFilterHit*>(obj);
         if (!hit) continue;
-
         if (hit->GetSystem() == 1)
           {
             totalHits++;
-
             int plane = hit->GetPlane();
             if (plane >= 0 && plane <2)
               hitsPerPlane[plane]++;

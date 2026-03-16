@@ -36,4 +36,8 @@
 #pragma link C++ class snd::analysis_cuts::sndTrackSciFiDOCA+;
 #pragma link C++ class snd::analysis_cuts::sndMaxDShits+;
 
+#pragma link C++ class snd::analysis_cuts::sndUsSpatialAnisotropyCut+;
+#pragma link C++ class snd::analysis_cuts::sndVetoHitsCut+;
+#pragma link C++ class snd::analysis_cuts::sndMCTrackBaseCut+;
+
 #endif

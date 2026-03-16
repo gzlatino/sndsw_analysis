@@ -18,8 +18,10 @@ namespace snd {
 
       processName = "Cut flow histograms";
       
-      isMC = true;
-      if (gROOT->GetListOfGlobals()->FindObject("rawConv")) isMC = false;
+      //isMC = true;
+      //if (gROOT->GetListOfGlobals()->FindObject("rawConv")) isMC = false;
+
+      bool isMC = (gROOT->FindObjectAny("cbmsim") != nullptr);
 
       // Get MCTracks
       if (isMC) {
@@ -42,6 +44,17 @@ namespace snd {
 	if (dynamic_cast<snd::analysis_cuts::baseCut*>(proc)){
 	  cuts->push_back(dynamic_cast<snd::analysis_cuts::baseCut*>(proc));
 	}
+      }
+
+      auto* weightGlobal = static_cast<TGlobal*>(gROOT->GetListOfGlobals()->FindObject("sndPMU_event_weight"));
+
+      if (weightGlobal) {
+	pmu_weight_ptr = static_cast<double*>(weightGlobal->GetAddress());
+	LOG(INFO) << "cutFlowHist: Linked to sndPMU_event_weight";
+      }
+      else {
+	LOG(WARNING) << "cutFlowHist: sndPMU_event_weight NOT found. Using default weight.";
+	pmu_weight_ptr = &default_weight;
       }
 
       // Book histograms
@@ -140,8 +153,11 @@ namespace snd {
   
     void cutFlowHist::process(){
 
+      double w = *pmu_weight_ptr;
+      
       // Fill 1st bin of cut flow for all the events
-      cutFlowHistogram->Fill(0);
+      //cutFlowHistogram->Fill(0);
+      cutFlowHistogram->Fill(0.0, w);
 
       // Fill cut flow histogram
       bool accept_event = true;
@@ -152,7 +168,8 @@ namespace snd {
 	if (not cut->passCut()) accept_event = false;
 	else n_cuts_passed += 1;
 	// If all cuts up to the current cut have passed, fill cutFlow histogram:
-	if (accept_event) cutFlowHistogram->Fill(i_cut + 1);
+	//if (accept_event) cutFlowHistogram->Fill(i_cut + 1);
+	if (accept_event) cutFlowHistogram->Fill(static_cast<double>(i_cut + 1), w);
       
 	i_cut++;
       }
@@ -160,7 +177,8 @@ namespace snd {
       if (isMC){
 	int this_species = getSpecies(MCTracks);
 	// Fill cut flow histogram
-	cutFlow_by_species->at(this_species)->Fill(0);
+	//cutFlow_by_species->at(this_species)->Fill(0);
+	cutFlow_by_species->at(this_species)->Fill(0.0, w);
 	int i_cut_species = 0;
 	for (snd::analysis_cuts::baseCut * cut : *cuts) {
 	  if (not cut->passCut()) break;
@@ -180,7 +198,8 @@ namespace snd {
 	hist_it = cut_by_cut_var_histos->at(seq_cut+1).begin();
 	for (snd::analysis_cuts::baseCut * cut : *cuts){
 	  for (long unsigned int i_dim = 0; i_dim < cut->getPlotVar().size(); i_dim++){
-	    (*hist_it)->Fill(cut->getPlotVar()[i_dim]);
+	    //(*hist_it)->Fill(cut->getPlotVar()[i_dim]);
+	    (*hist_it)->Fill(cut->getPlotVar()[i_dim], w);
 	    hist_it++;
 	  }
 	}
@@ -205,7 +224,8 @@ namespace snd {
       for (snd::analysis_cuts::baseCut * cut : *cuts) {
 	for (long unsigned int i_dim = 0; i_dim < cut->getPlotVar().size(); i_dim++){
 	  if (((not cut->passCut()) and (n_cuts_passed == (static_cast<int>(cuts->size())-1)))
-	      or (n_cuts_passed == static_cast<int>(cuts->size())) ) (*hist_it)->Fill(cut->getPlotVar()[i_dim]);
+	      //or (n_cuts_passed == static_cast<int>(cuts->size())) ) (*hist_it)->Fill(cut->getPlotVar()[i_dim]);
+	      or (n_cuts_passed == static_cast<int>(cuts->size())) ) (*hist_it)->Fill(cut->getPlotVar()[i_dim], w);
 	  hist_it++;
 	}
 	current_cut++;

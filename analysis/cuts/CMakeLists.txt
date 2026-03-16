@@ -38,6 +38,10 @@ sndEventDirectionCut.cxx
 sndTrackFiducialCut.cxx
 sndTrackSciFiDOCA.cxx
 sndMaxDShits.cxx
+
+sndUsSpatialAnisotropyCut.cxx
+sndVetoHitsCut.cxx
+sndMCTrackBaseCut.cxx
 )
 
 set(LINK_DIRECTORIES
